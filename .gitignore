@@ -1,0 +1,31 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Tooling
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Generated artifacts
+logs/
+results/
+generated_projects/
+temp_projects/
+context_storage/
+
+# Coverage / build
+coverage.xml
+.coverage*
+dist/
+build/
+*.egg-info/

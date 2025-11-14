@@ -1,0 +1,63 @@
+# Prometheus告警规则
+groups:
+  - name: multi_agent_dev_alerts
+    rules:
+      # API调用失败率过高
+      - alert: HighAPIFailureRate
+        expr: rate(claude_api_calls_total{status="failure"}[5m]) / rate(claude_api_calls_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Claude API调用失败率过高"
+          description: "在过去5分钟内，Claude API调用失败率超过10%"
+
+      # 任务执行失败率过高
+      - alert: HighTaskFailureRate
+        expr: rate(tasks_total{status="failure"}[5m]) / rate(tasks_total[5m]) > 0.2
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "任务执行失败率过高"
+          description: "在过去5分钟内，任务执行失败率超过20%"
+
+      # API调用延迟过高
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, rate(claude_api_call_duration_seconds_bucket[5m])) > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Claude API调用延迟过高"
+          description: "95%的API调用延迟超过30秒"
+
+      # 队列积压过多
+      - alert: TaskQueueBacklog
+        expr: task_queue_size{status="pending"} > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "任务队列积压过多"
+          description: "待处理任务数量超过50个"
+
+      # 错误率突增
+      - alert: ErrorRateSpike
+        expr: rate(errors_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "错误率突然增加"
+          description: "在过去5分钟内，错误发生率超过每分钟5次"
+
+      # 系统资源使用率过高（需要配置node_exporter）
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "内存使用率过高"
+          description: "系统内存使用率超过90%"

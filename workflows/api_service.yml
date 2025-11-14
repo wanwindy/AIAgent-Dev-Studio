@@ -1,0 +1,67 @@
+complexity_levels:
+- simple
+- medium
+- complex
+description: RESTful API服务开发工作流
+global_settings:
+  auto_retry: true
+  max_parallel_agents: 2
+  max_retries: 3
+  quality_threshold: 0.85
+name: API服务开发流程
+project_types:
+- api
+- microservice
+- backend
+stages:
+- agents:
+  - master
+  description: 分析API需求和接口设计
+  name: 需求分析
+  parallel: false
+  quality_gates:
+  - requirements_analysis
+  timeout_minutes: 20
+- agents:
+  - database_design
+  - documentation
+  dependencies:
+  - 需求分析
+  description: API设计和数据库设计
+  name: 设计阶段
+  parallel: true
+  quality_gates:
+  - design_review
+  timeout_minutes: 40
+- agents:
+  - backend
+  - documentation
+  dependencies:
+  - 设计阶段
+  description: API实现和文档生成
+  name: 开发阶段
+  parallel: true
+  quality_gates:
+  - code_quality
+  timeout_minutes: 90
+- agents:
+  - testing
+  dependencies:
+  - 开发阶段
+  description: API测试和集成测试
+  name: 测试阶段
+  parallel: false
+  quality_gates:
+  - testing_coverage
+  timeout_minutes: 30
+- agents:
+  - review
+  - deployment
+  dependencies:
+  - 测试阶段
+  description: 代码审查和部署
+  name: 部署阶段
+  parallel: false
+  quality_gates:
+  - deployment_readiness
+  timeout_minutes: 20

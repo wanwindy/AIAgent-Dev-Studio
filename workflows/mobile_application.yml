@@ -1,0 +1,69 @@
+complexity_levels:
+- simple
+- medium
+- complex
+description: 移动应用开发工作流
+global_settings:
+  auto_retry: true
+  max_parallel_agents: 4
+  max_retries: 2
+  quality_threshold: 0.8
+name: 移动应用开发流程
+project_types:
+- mobile
+- ios
+- android
+- react-native
+- flutter
+stages:
+- agents:
+  - master
+  description: 分析移动应用需求
+  name: 需求分析
+  parallel: false
+  quality_gates:
+  - requirements_analysis
+  timeout_minutes: 30
+- agents:
+  - ui_design
+  - database_design
+  dependencies:
+  - 需求分析
+  description: UI/UX设计和数据设计
+  name: 设计阶段
+  parallel: true
+  quality_gates:
+  - design_review
+  timeout_minutes: 80
+- agents:
+  - frontend
+  - backend
+  dependencies:
+  - 设计阶段
+  description: 移动端和后端开发
+  name: 开发阶段
+  parallel: true
+  quality_gates:
+  - code_quality
+  timeout_minutes: 150
+- agents:
+  - testing
+  dependencies:
+  - 开发阶段
+  description: 功能测试和设备兼容性测试
+  name: 测试阶段
+  parallel: false
+  quality_gates:
+  - testing_coverage
+  timeout_minutes: 60
+- agents:
+  - review
+  - deployment
+  dependencies:
+  - 测试阶段
+  description: 应用打包和发布准备
+  name: 部署阶段
+  parallel: false
+  quality_gates:
+  - deployment_readiness
+  timeout_minutes: 40

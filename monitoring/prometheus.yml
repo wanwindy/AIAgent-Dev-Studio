@@ -1,0 +1,32 @@
+# Prometheus配置文件
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # 多Agent开发系统指标
+  - job_name: 'multi-agent-dev'
+    static_configs:
+      - targets: ['multi-agent-dev:8000']
+    scrape_interval: 10s
+    metrics_path: /metrics
+    
+  # Prometheus自身指标
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+# 告警规则（可选）
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# 规则文件
+rule_files:
+  - "alert_rules.yml"
